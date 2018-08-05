@@ -12,10 +12,10 @@ const actions = {
         let member = message.guild.members.find(m => m.id === id || m.user.tag === to);
         if (member) {
             const msg = interpolate(object.content, vars);
-            member.send(msg);
+            member.send(msg).catch(replyError(message));
         } else {
             console.error('member not found', member);
-            message.reply("Member not found!");
+            message.reply("Member not found!").catch(replyError(message));
         }
     },
 
@@ -32,11 +32,11 @@ const actions = {
                 member.addRole(role).catch(replyError(message));
             } else {
                 console.error('role not found');
-                message.reply("Role not found!");
+                message.reply("Role not found!").catch(replyError(message));
             }
         } else {
             console.error('member not found', member);
-            message.reply("Member not found!");
+            message.reply("Member not found!").catch(replyError(message));
         }
     },
 
@@ -53,11 +53,11 @@ const actions = {
                 member.removeRole(role).catch(replyError(message));
             } else {
                 console.error('role not found');
-                message.reply("Role not found!");
+                message.reply("Role not found!").catch(replyError(message));
             }
         } else {
             console.error('member not found', member);
-            message.reply("Member not found!");
+            message.reply("Member not found!").catch(replyError(message));
         }
     },
 
@@ -72,21 +72,21 @@ const actions = {
         if (member) {
             if (member.kickable) {
                
-                if (!reasonStr) message.reply("Please provided a reason!");
+                if (!reasonStr) message.reply("Please provided a reason!").catch(replyError(message));
 
                 // Now, time for a swift kick in the nuts!
                 await member.kick(reasonStr)
-                    .catch(error => message.reply(`Sorry ${message.author} I couldn't kick because of : ${error}`));
+                    .catch(error => message.reply(`Sorry ${message.author} I couldn't kick because of : ${error}`)).catch(replyError(message));
                 
             }
             else{
-                return message.reply("I cannot kick this user! Do they have a higher role? Do I have kick permissions?");
+                return message.reply("I cannot kick this user! Do they have a higher role? Do I have kick permissions?").catch(replyError(message));
             }
 
 
         } else {
             console.error('member not found', member);
-            message.reply("Member not found!");
+            message.reply("Member not found!").catch(replyError(message));
         }
     },
 
@@ -105,16 +105,16 @@ const actions = {
 
                 // Now, time for a swift kick in the nuts!
                 await member.ban(reasonStr)
-                    .catch(error => message.reply(`Sorry ${message.author} I couldn't ban because of : ${error}`));
+                    .catch(error => message.reply(`Sorry ${message.author} I couldn't ban because of : ${error}`)).catch(replyError(message));
 
             } else {
-                return message.reply("I cannot ban this user! Do they have a higher role? Do I have ban permissions?");
+                return message.reply("I cannot ban this user! Do they have a higher role? Do I have ban permissions?").catch(replyError(message));
             }
 
 
         } else {
             console.error('member not found', member);
-            message.reply("Member not found!");
+            message.reply("Member not found!").catch(replyError(message));
         }
     },
 

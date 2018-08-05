@@ -15,19 +15,47 @@ module.exports = {
     },
 
     getVariables(message) {
+
+        const args = message.content.split(' ');
+
         return {
+            server: message.guild.name,
+            channel: message.channel,
+            author: message.author,
+            mention: message.mentions.members.first(),
+
+            //plain text
             channelType: message.channel.type, //dm,text,group
             channelName: message.channel.name,
-            username: message.author.username, //Victor
-            tag: message.author.tag, //Victor#1234
+            authorName: message.author.username, //Victor
+            authorTag: message.author.tag, //Victor#1234
 
-            server: message.guild.name,
-            channel: message.channel.toString(),
-            author: message.author.toString(),
+            //arguments
+            args: args,
 
-            args: message.content.split(' '),
+            '0': args[0],
+            '1': args[1],
+            '2': args[2],
+            '3': args[3],
+            '4': args[4],
+            '5': args[5],
+            '6': args[6],
+            '7': args[7],
+            '8': args[8],
+            '9': args[9],
 
-            mention: message.mentions.members.first()
+            '0n': args.slice(0).join(' '),
+            '1n': args.slice(1).join(' '),
+            '2n': args.slice(2).join(' '),
+            '3n': args.slice(3).join(' '),
+            '4n': args.slice(4).join(' '),
+            '5n': args.slice(5).join(' '),
+            '6n': args.slice(6).join(' '),
+            '7n': args.slice(7).join(' '),
+            '8n': args.slice(8).join(' '),
+            '9n': args.slice(9).join(' '),
+
+
         };
     },
 };

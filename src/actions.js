@@ -90,6 +90,35 @@ const actions = {
         }
     },
 
+    async ban(client, message, vars, object) {
+        const whoStr = interpolate(object.who, vars);
+        const reasonStr = interpolate(object.reason, vars);
+
+        const memberId = parseTag(whoStr);
+        const member = message.guild.members.find(m => m.id === memberId || m.user.tag === whoStr);
+
+
+        if (member) {
+            if (member.kickable) {
+
+                if (!reasonStr) message.reply("Please provided a reason!");
+
+                // Now, time for a swift kick in the nuts!
+                await member.ban(reasonStr)
+                    .catch(error => message.reply(`Sorry ${message.author} I couldn't ban because of : ${error}`));
+
+            } else {
+                return message.reply("I cannot ban this user! Do they have a higher role? Do I have ban permissions?");
+            }
+
+
+        } else {
+            console.error('member not found', member);
+            message.reply("Member not found!");
+        }
+    },
+
+
 };
 
 

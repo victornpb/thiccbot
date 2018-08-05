@@ -4,6 +4,15 @@ module.exports = {
 
     commands: {
 
+        ";r":{
+            enabled:true,
+            ignoreBot: true,
+            actions: [{
+                type: 'react',
+                emoji: '🆗'
+            }]
+        },
+
         "echo": {
             type: 'custom',
             enabled: true,
@@ -53,6 +62,10 @@ module.exports = {
                 type: 'dm',
                 to: '{mention}',
                 content: "Hi this is a test action (DM) from {server} {channel}, invoked by {author}.\n\nMessage: {2n}",
+            },
+            {
+                type: 'react',
+                emoji: '🆗'
             }]
         },
 
@@ -71,6 +84,10 @@ module.exports = {
                 type: 'addRole',
                 to: '{mention}',
                 role: 'Muted',
+            },
+            {
+                type: 'react',
+                emoji: '🆗'
             }]
         },
 
@@ -89,6 +106,10 @@ module.exports = {
                 type: 'removeRole',
                 to: '{mention}',
                 role: 'Muted',
+            },
+            {
+                type: 'react',
+                emoji: '🆗'
             }]
         },
 
@@ -107,6 +128,10 @@ module.exports = {
                 type: 'addRole',
                 to: '{args.1}',
                 role: '{args.2}',
+            },
+            {
+                type: 'react',
+                emoji: '🆗'
             }]
         },
 
@@ -125,6 +150,10 @@ module.exports = {
                 type: 'removeRole',
                 to: '{args.1}',
                 role: '{args.2}',
+            },
+            {
+                type: 'react',
+                emoji: '🆗'
             }]
         },
 
@@ -144,6 +173,10 @@ module.exports = {
                 type: 'kick',
                 who: '{mention}',
                 reason: '{2n}',
+            },
+            {
+                type: 'react',
+                emoji: '🆗'
             }]
         },
 

@@ -59,7 +59,37 @@ const actions = {
             console.error('member not found', member);
             message.reply("Member not found!");
         }
-    }
+    },
+
+    async kick(client, message, vars, object) {
+        const whoStr = interpolate(object.who, vars);
+        const reasonStr = interpolate(object.reason, vars);
+
+        const memberId = parseTag(whoStr);
+        const member = message.guild.members.find(m => m.id === memberId || m.user.tag === whoStr);
+        
+
+        if (member) {
+            if (member.kickable) {
+               
+                if (!reasonStr) message.reply("Please provided a reason!");
+
+                // Now, time for a swift kick in the nuts!
+                await member.kick(reasonStr)
+                    .catch(error => message.reply(`Sorry ${message.author} I couldn't kick because of : ${error}`));
+                
+            }
+            else{
+                return message.reply("I cannot kick this user! Do they have a higher role? Do I have kick permissions?");
+            }
+
+
+        } else {
+            console.error('member not found', member);
+            message.reply("Member not found!");
+        }
+    },
+
 };
 
 
@@ -67,7 +97,8 @@ function actionEngine(client, message, vars, actionList) {
 
     actionList.forEach((action) => {
         const actionType = action.type;
-        const fn = actions[actionType];
+        const fn = actions
+        [actionType];
 
         if (fn) {
             fn(client, message, vars, action);

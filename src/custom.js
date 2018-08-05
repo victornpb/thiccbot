@@ -92,5 +92,24 @@ module.exports = {
             }]
         },
 
+
+        ";kick": {
+            type: 'custom',
+            enabled: true,
+            // reply: "Hello {author} this is a test reply from {server} {channel}",
+            // replyDm: "Hello {author} this is a test reply (via dm) from {server} {channel}",
+
+            deleteCall: false,
+            ignoreBot: true,
+
+            require: ['role1'],
+
+            actions: [{
+                type: 'kick',
+                to: '{args.1}',
+                role: '{args.2}',
+            }]
+        },
+
     }
 };

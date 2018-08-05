@@ -13,21 +13,28 @@ module.exports = {
             }]
         },
 
-        "echo": {
+        ";messagechannel":{
+            enabled: true,
+            ignoreBot: true,
+            actions: [{
+                type: 'message',
+                channel: '{1}',
+                content: '{2n}'
+            }]
+        },
+
+        ";say": {
             type: 'custom',
             enabled: true,
-            reply: "echo\n{1n}",
-            // replyDm: "Hello {author} this is a test reply (via dm) from {server} {channel}",
             deleteCall: false,
             ignoreBot: true,
 
-            // require: ['role1'],
-
-            // actions: [{
-            //     type: 'dm',
-            //     to: 'jake1#1623',
-            //     content: "Hi this is a test action (DM) from {server} {channel}, invoked by {author}.",
-            // }]
+            actions: [{
+                type: 'message',
+                channel: '{channel}',
+                content: '{1n}',
+                autoPurge: 3
+            }]
         },
 
         "foo": {

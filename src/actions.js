@@ -12,6 +12,30 @@ const actions = {
         message.react(emoji);
     },
 
+    async message(client, message, vars, object) {
+        
+        const channelStr = interpolate(object.channel, vars);
+        const content = interpolate(object.content, vars);
+        const autoPurge = interpolate(object.autoPurge, vars);
+
+        const channelId = parseTag(channelStr);
+        let channel = message.guild.channels.find(c => c.id === channelId || c.name === channelStr);
+        if (channel) {
+            const msg = interpolate(object.content, vars);
+            channel.send(msg).catch(replyError(message)).then(m=>{
+                if(autoPurge){
+                    setTimeout(()=>{
+                        m.delete().catch(O_o => {});
+                    }, autoPurge * 1000);
+                }
+            });
+        } else {
+            console.error('Channel not found', channel);
+            message.reply("Channel not found!").catch(replyError(message));
+
+        }
+    },
+
     async dm(client, message, vars, object) {
         const to = interpolate(object.to, vars);
         const id = parseTag(to);

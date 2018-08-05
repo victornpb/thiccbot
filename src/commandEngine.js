@@ -53,10 +53,7 @@ async function commandEngine(client, message) {
         if (cmd.deleteCall) {
             message.delete().catch(O_o => {});
         }
-
-
     }
-
 }
 
 module.exports = commandEngine;

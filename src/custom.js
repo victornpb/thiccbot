@@ -7,8 +7,7 @@ module.exports = {
         "echo": {
             type: 'custom',
             enabled: true,
-            reply: "Hello {author} this is a test reply from {server} {channel}\n"+
-                    "1:{1}, 2:{2}, 3:{3}\n {1n}\n{2n}",
+            reply: "echo\n{1n}",
             // replyDm: "Hello {author} this is a test reply (via dm) from {server} {channel}",
             deleteCall: false,
             ignoreBot: true,
@@ -36,6 +35,24 @@ module.exports = {
                 type: 'dm',
                 to: 'jake1#1623',
                 content: "Hi this is a test action (DM) from {server} {channel}, invoked by {author}.",
+            }]
+        },
+
+        ";dm": {
+            type: 'custom',
+            enabled: true,
+            // reply: "Hello {author} this is a test reply from {server} {channel}",
+            // replyDm: "Hello {author} this is a test reply (via dm) from {server} {channel}",
+
+            deleteCall: false,
+            ignoreBot: true,
+
+            require: ['role1'],
+
+            actions: [{
+                type: 'dm',
+                to: '{mention}',
+                content: "Hi this is a test action (DM) from {server} {channel}, invoked by {author}.\n\nMessage: {2n}",
             }]
         },
 

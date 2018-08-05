@@ -21,13 +21,16 @@ async function commandEngine(client, message) {
     const cmd = custom.commands[commandStr];
     if (cmd && cmd.enabled) {
 
+        // ignore bots
+        if (message.author.bot && cmd.ignoreBot) return;
+
+        // verify required roles
         if (cmd.require && !message.member.roles.some(role => cmd.require.includes(role.name))) {
-            return message.reply("Sorry, you don't have permissions to use this!").catch(replyError(message));
+            return message.reply("Sorry, you don't have permissions to use this command!").catch(replyError(message));
         }
 
+        // get variables
         const vars = getVariables(message);
-
-        if (message.author.bot && cmd.ignoreBot) return;
 
         //execute actions
         if (cmd.actions) {
@@ -45,7 +48,6 @@ async function commandEngine(client, message) {
             const msg = String(cmd.replyDm).format(vars);
             message.author.send(msg).catch(replyError(message));
         }
-
 
         //remove command invokation message
         if (cmd.deleteCall) {

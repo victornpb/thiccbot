@@ -190,7 +190,7 @@ const actions = {
         const fetched = await channel.fetchMessages({
             limit: amount
         });
-        channel.bulkDelete(fetched).catch(error => message.reply(`Couldn't delete messages because of: ${error}`));
+        await channel.bulkDelete(fetched).catch(error => message.reply(`Couldn't delete messages because of: ${error}`));
 
         } else {
             console.error('Channel not found', channel);

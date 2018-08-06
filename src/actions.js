@@ -5,15 +5,24 @@ const {
 } = require('./utils/utils');
 
 const actions = {
+
+    async conditional(client, message, vars, object){
+        const a = interpolate(object.a, vars);
+        const b = interpolate(object.b, vars);
+
+        return true;
+    },
+
     async createInvite(client, message, vars, object) {
-        const link = await client.generateInvite(['SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE']);
+        const link = await client.generateInvite(['ADMINISTRATOR']);
         await message.reply(link).catch(replyError(message));
+        return true;
     },
 
     async react(client, message, vars, object) {
-        // const to = interpolate(object.to, vars);
         const emoji = interpolate(object.emoji, vars);
-        message.react(emoji);
+        await message.react(emoji);
+        return true;
     },
 
     async message(client, message, vars, object) {
@@ -26,7 +35,7 @@ const actions = {
         let channel = message.guild.channels.find(c => c.id === channelId || c.name === channelStr);
         if (channel) {
             const msg = interpolate(object.content, vars);
-            channel.send(msg).catch(replyError(message)).then(m => {
+            await channel.send(msg).catch(replyError(message)).then(m => {
                 if (autoPurge) {
                     client.setTimeout(() => {
                         m.delete().catch(O_o => { });
@@ -35,9 +44,10 @@ const actions = {
             });
         } else {
             console.error('Channel not found', channel);
-            message.reply("Channel not found!").catch(replyError(message));
-
+            await message.reply("Channel not found!").catch(replyError(message));
+            return false;
         }
+        return true;
     },
 
     async dm(client, message, vars, object) {
@@ -46,11 +56,13 @@ const actions = {
         let member = message.guild.members.find(m => m.id === id || m.user.tag === to);
         if (member) {
             const msg = interpolate(object.content, vars);
-            member.send(msg).catch(replyError(message));
+            await member.send(msg).catch(replyError(message));
         } else {
             console.error('member not found', member);
-            message.reply("Member not found!").catch(replyError(message));
+            await message.reply("Member not found!").catch(replyError(message));
+            return false;
         }
+        return true;
     },
 
     async addRole(client, message, vars, object) {
@@ -63,15 +75,18 @@ const actions = {
 
         if (member) {
             if (role) {
-                member.addRole(role).catch(replyError(message));
+                await member.addRole(role).catch(replyError(message));
             } else {
                 console.error('role not found');
-                message.reply("Role not found!").catch(replyError(message));
+                await message.reply("Role not found!").catch(replyError(message));
+                return false;
             }
         } else {
             console.error('member not found', member);
-            message.reply("Member not found!").catch(replyError(message));
+            await message.reply("Member not found!").catch(replyError(message));
+            return false;
         }
+        return true;
     },
 
     async removeRole(client, message, vars, object) {
@@ -84,15 +99,18 @@ const actions = {
 
         if (member) {
             if (role) {
-                member.removeRole(role).catch(replyError(message));
+                await member.removeRole(role).catch(replyError(message));
             } else {
                 console.error('role not found');
-                message.reply("Role not found!").catch(replyError(message));
+                await message.reply("Role not found!").catch(replyError(message));
+                return false
             }
         } else {
             console.error('member not found', member);
-            message.reply("Member not found!").catch(replyError(message));
+            await message.reply("Member not found!").catch(replyError(message));
+            return false;
         }
+        return true;
     },
 
     async kick(client, message, vars, object) {
@@ -114,14 +132,16 @@ const actions = {
 
             }
             else {
-                return message.reply("I cannot kick this user! Do they have a higher role? Do I have kick permissions?").catch(replyError(message));
+                await message.reply("I cannot kick this user! Do they have a higher role? Do I have kick permissions?").catch(replyError(message));
+                return false;
             }
-
 
         } else {
             console.error('member not found', member);
-            message.reply("Member not found!").catch(replyError(message));
+            await message.reply("Member not found!").catch(replyError(message));
+            return false;
         }
+        return true;
     },
 
     async ban(client, message, vars, object) {
@@ -130,7 +150,6 @@ const actions = {
 
         const memberId = parseTag(whoStr);
         const member = message.guild.members.find(m => m.id === memberId || m.user.tag === whoStr);
-
 
         if (member) {
             if (member.kickable) {
@@ -142,34 +161,38 @@ const actions = {
                     .catch(error => message.reply(`Sorry ${message.author} I couldn't ban because of : ${error}`)).catch(replyError(message));
 
             } else {
-                return message.reply("I cannot ban this user! Do they have a higher role? Do I have ban permissions?").catch(replyError(message));
+                await message.reply("I cannot ban this user! Do they have a higher role? Do I have ban permissions?").catch(replyError(message));
+                return false;
             }
-
 
         } else {
             console.error('member not found', member);
-            message.reply("Member not found!").catch(replyError(message));
+            await message.reply("Member not found!").catch(replyError(message));
+            return false;
         }
+        return true;
     },
 
 
 };
 
 
-function actionEngine(client, message, vars, actionList) {
+async function actionEngine(client, message, vars, actionList) {
 
-    actionList.forEach((action) => {
+    let result;
+
+    for(let action of actionList) {
         const actionType = action.type;
-        const fn = actions
-        [actionType];
+        const fn = actions[actionType];
 
         if (fn) {
-            fn(client, message, vars, action);
+            result = await fn(client, message, vars, action);
+            vars.result = result;
         } else {
             console.error('invalid action');
             message.reply("Invalid Action Type" + "\n```json\s" + JSON.stringify(action, null, 2) + "\n```");
         }
-    });
+    }
 }
 
 module.exports = actionEngine;

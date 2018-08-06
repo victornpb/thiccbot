@@ -1,4 +1,5 @@
 module.exports = {
+<<<<<<< HEAD
     "prefix": ";",
     "commands": {
         ";invite": {
@@ -9,6 +10,26 @@ module.exports = {
                     "type": "createInvite"
                 }
             ]
+=======
+
+    prefix: ";",
+
+    commands: {
+        ";invite":{
+            enabled:true,
+            ignoreBot: true,
+            actions: [{
+                type: 'createInvite',
+            }]
+        },
+        ";r":{
+            enabled:true,
+            ignoreBot: true,
+            actions: [{
+                type: 'react',
+                emoji: '🆗'
+            }]
+>>>>>>> 8fcd901c89980a0d8fa02772889442f461ce39d7
         },
         ";r": {
             "enabled": true,

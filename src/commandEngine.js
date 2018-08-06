@@ -7,9 +7,11 @@ const {
 
 const actionEngine = require('./actions');
 
-const custom = require('./custom');
+// const custom = require('./custom');
 
-async function commandEngine(client, message) {
+async function commandEngine(client, custom, message) {
+
+    if(!custom) return console.log('No config for this guild!');
 
     console.log(message);
 

@@ -7,9 +7,6 @@ const token = process.env.token;
 
 const commandEngine = require('./commandEngine');
 
-
-
-
 const {
   interpolate,
   replyError,
@@ -17,17 +14,34 @@ const {
   getVariables,
 } = require('./utils/utils');
 
-
-
-
+const db = require('./db/db');
 
 // This is your client. Some people call it `bot`, some people call it `self`, 
 const client = new Discord.Client();
 
+const defaultConfig = require('./defaultConfig');
+
 client.on("message", async message => {
   // This event will run on every single message received, from any channel or DM.
 
-  await commandEngine(client, message);
+  // you should ignore your own bot messages unless u like infinity loops XD
+  if (message.author.id === client.user.id) return;
+  
+  const guildId = message.guild.id;
+
+  try {
+    let guildConfig = await db.fetchGuildConfig(guildId);
+
+    if (!guildConfig) {
+      console.log('No config found for this guild, creating default config', guildId);
+      guildConfig = await db.saveGuildConfig(guildId, defaultConfig);
+    }
+    await commandEngine(client, guildConfig.config, message);
+  }
+  catch (err) {
+    console.error(err);
+    message.author.send('EXCEPTION ```\n' + err + '```');
+  }
 
 });
 
@@ -38,8 +52,8 @@ client.on("ready", () => {
   // Example of changing the bot's playing game to something useful. `client.user` is what the
   // docs refer to as the "ClientUser".
   client.user.setActivity(`${client.guilds.size} servers`, {
-      type: "WATCHING",
-    }).then(console.log)
+    type: "WATCHING",
+  }).then(console.log)
     .catch(console.error);
 
   // Set the client user's status
@@ -53,9 +67,11 @@ client.on("guildCreate", guild => {
   // This event triggers when the bot joins a guild.
   console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
   client.user.setActivity(`${client.guilds.size} servers`, {
-      type: "WATCHING",
-    }).then(console.log)
+    type: "WATCHING",
+  }).then(console.log)
     .catch(console.error);
+
+  db.saveGuildConfig(guild.id, {});
 });
 
 
@@ -63,8 +79,8 @@ client.on("guildDelete", guild => {
   // this event triggers when the bot is removed from a guild.
   console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
   client.user.setActivity(`${client.guilds.size} servers`, {
-      type: "WATCHING",
-    }).then(console.log)
+    type: "WATCHING",
+  }).then(console.log)
     .catch(console.error);
 });
 
@@ -83,4 +99,10 @@ client.on("disconnect", d => {
   client.login(token);
 });
 
-client.login(token);
+
+(async () => {
+
+  await db.connect();
+  client.login(token);
+
+})();

@@ -19,17 +19,6 @@ module.exports = {
         const args = message.content.split(' ');
 
         return {
-            server: message.guild.name,
-            channel: message.channel,
-            author: message.author,
-            mention: message.mentions.members.first(),
-
-            //plain text
-            channelType: message.channel.type, //dm,text,group
-            channelName: message.channel.name,
-            authorName: message.author.username, //Victor
-            authorTag: message.author.tag, //Victor#1234
-
             //arguments
             args: args,
 
@@ -55,6 +44,20 @@ module.exports = {
             '8n': args.slice(8).join(' '),
             '9n': args.slice(9).join(' '),
 
+            server: message.guild.name,
+            channel: message.channel,
+            author: message.author,
+            mention: message.mentions.members.first(),
+
+            //plain text
+            channelType: message.channel.type, //dm,text,group
+            channelName: message.channel.name,
+            authorName: message.author.username, //Victor
+            authorTag: message.author.tag, //Victor#1234
+
+
+            ping: message.client.ping,
+            uptime: message.client.uptime,
 
         };
     },

@@ -69,4 +69,18 @@ client.on("guildDelete", guild => {
 });
 
 
+
+client.on("error", r => {
+  console.error('error event', r);
+});
+
+client.on("reconnecting", e => {
+  console.error('reconnecting event', e);
+});
+
+client.on("disconnect", d => {
+  console.warn('disconnect event', d);
+  client.login(token);
+});
+
 client.login(token);

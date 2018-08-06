@@ -173,6 +173,32 @@ const actions = {
         return true;
     },
 
+    async purge(client, message, vars, object) {
+
+        const channelStr = interpolate(object.channel, vars);
+        const amount = parseInt(interpolate(object.amount, vars), 10);
+
+        // Ooooh nice, combined conditions. <3
+        if (!amount || amount < 2 || amount > 100)
+        return message.reply("Please provide a number between 2 and 100 for the number of messages to delete");
+        
+        const channelId = parseTag(channelStr);
+        let channel = message.guild.channels.find(c => c.id === channelId || c.name === channelStr);
+        if (channel) {
+                
+        // So we get our messages, and delete them. Simple enough, right?
+        const fetched = await channel.fetchMessages({
+            limit: amount
+        });
+        channel.bulkDelete(fetched).catch(error => message.reply(`Couldn't delete messages because of: ${error}`));
+
+        } else {
+            console.error('Channel not found', channel);
+            await message.reply("Channel not found!").catch(replyError(message));
+            return false;
+        }
+        return true;
+    },
 
 };
 
@@ -189,8 +215,8 @@ async function actionEngine(client, message, vars, actionList) {
             result = await fn(client, message, vars, action);
             vars.result = result;
         } else {
-            console.error('invalid action');
-            message.reply("Invalid Action Type" + "\n```json\s" + JSON.stringify(action, null, 2) + "\n```");
+            console.error('Unknown action');
+            message.reply("Unknown Action Type" + "\n```json\n" + JSON.stringify(action, null, 2) + "\n```");
         }
     }
 }

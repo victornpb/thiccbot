@@ -3,7 +3,13 @@ module.exports = {
     prefix: ";",
 
     commands: {
-
+        ";invite":{
+            enabled:true,
+            ignoreBot: true,
+            actions: [{
+                type: 'createInvite',
+            }]
+        },
         ";r":{
             enabled:true,
             ignoreBot: true,

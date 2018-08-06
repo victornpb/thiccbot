@@ -5,6 +5,10 @@ const {
 } = require('./utils/utils');
 
 const actions = {
+    async createInvite(client, message, vars, object) {
+        const link = await client.generateInvite(['SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE']);
+        await message.reply(link).catch(replyError(message));
+    },
 
     async react(client, message, vars, object) {
         // const to = interpolate(object.to, vars);
@@ -13,7 +17,7 @@ const actions = {
     },
 
     async message(client, message, vars, object) {
-        
+
         const channelStr = interpolate(object.channel, vars);
         const content = interpolate(object.content, vars);
         const autoPurge = interpolate(object.autoPurge, vars);
@@ -22,10 +26,10 @@ const actions = {
         let channel = message.guild.channels.find(c => c.id === channelId || c.name === channelStr);
         if (channel) {
             const msg = interpolate(object.content, vars);
-            channel.send(msg).catch(replyError(message)).then(m=>{
-                if(autoPurge){
-                    setTimeout(()=>{
-                        m.delete().catch(O_o => {});
+            channel.send(msg).catch(replyError(message)).then(m => {
+                if (autoPurge) {
+                    client.setTimeout(() => {
+                        m.delete().catch(O_o => { });
                     }, autoPurge * 1000);
                 }
             });
